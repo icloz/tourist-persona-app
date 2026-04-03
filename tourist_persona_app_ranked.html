@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tourist Persona Survey</title>
+  <style>
+    :root {
+      --bg: #f6f8fb;
+      --card: #ffffff;
+      --ink: #16324f;
+      --muted: #5c7085;
+      --accent: #0f5e84;
+      --accent-2: #dff2fb;
+      --line: #dbe4ee;
+      --success: #0f766e;
+      --selected-1: #d8eefc;
+      --selected-2: #eef7df;
+      --warn: #9a3412;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: #1f2937;
+      line-height: 1.45;
+    }
+    .wrap {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 20px 56px;
+    }
+    .hero, .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(16, 24, 40, 0.06);
+    }
+    .hero {
+      padding: 28px;
+      margin-bottom: 20px;
+      background: linear-gradient(135deg, #ffffff 0%, #f0f8fc 100%);
+    }
+    h1 {
+      margin: 0 0 10px;
+      color: var(--ink);
+      font-size: 34px;
+    }
+    .sub {
+      color: var(--muted);
+      margin: 0;
+    }
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+    .legend-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #fff;
+    }
+    .swatch {
+      width: 14px;
+      height: 14px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .card { padding: 22px; }
+    .q-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--ink);
+      margin: 0 0 8px;
+    }
+    .q-help {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 12px;
+    }
+    .option {
+      display: block;
+      padding: 12px 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      margin: 10px 0;
+      background: #fff;
+      cursor: pointer;
+      transition: background .15s ease, border-color .15s ease, transform .05s ease;
+    }
+    .option:hover { background: #f9fbfd; }
+    .option.selected-rank-1 {
+      background: var(--selected-1);
+      border-color: #97c7ea;
+    }
+    .option.selected-rank-2 {
+      background: var(--selected-2);
+      border-color: #bfd996;
+    }
+    .option-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+    .rank-badge {
+      min-width: 72px;
+      text-align: center;
+      padding: 5px 8px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      border: 1px solid transparent;
+      color: transparent;
+      background: transparent;
+    }
+    .selected-rank-1 .rank-badge {
+      color: #0b5f8a;
+      background: #eef8ff;
+      border-color: #97c7ea;
+    }
+    .selected-rank-2 .rank-badge {
+      color: #587c12;
+      background: #f5fbe8;
+      border-color: #bfd996;
+    }
+    .warning {
+      color: var(--warn);
+      font-size: 13px;
+      margin-top: 8px;
+      display: none;
+    }
+    .actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+    button {
+      border: 0;
+      border-radius: 12px;
+      padding: 13px 18px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    .primary {
+      background: var(--accent);
+      color: white;
+      font-weight: 700;
+    }
+    .secondary {
+      background: #eef4f8;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+    .result {
+      display: none;
+      margin-top: 20px;
+      border-left: 5px solid var(--accent);
+      background: #fcfeff;
+    }
+    .pill {
+      display: inline-block;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--accent-2);
+      color: var(--accent);
+      font-weight: 700;
+      margin: 4px 8px 4px 0;
+    }
+    .scores {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 10px;
+      margin-top: 14px;
+    }
+    .score-box {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 12px;
+      background: white;
+    }
+    .small { color: var(--muted); font-size: 14px; }
+    .footer-note {
+      margin-top: 16px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    @media (max-width: 640px) {
+      h1 { font-size: 28px; }
+      .hero, .card { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <section class="hero">
+      <h1>Tourist Persona Survey</h1>
+      <p class="sub">A ranked survey that classifies respondents into Explorer, Comfort-Seeker, Backpacker, Experience Seeker, Eco-tourist, or the hybrid <strong>Conscious Explorer</strong>.</p>
+      <div class="legend">
+        <span class="legend-chip"><span class="swatch" style="background: var(--selected-1);"></span> First choice = 2 points</span>
+        <span class="legend-chip"><span class="swatch" style="background: var(--selected-2);"></span> Second choice = 1 point</span>
+        <span class="legend-chip">Select up to 2 answers per question</span>
+      </div>
+    </section>
+
+    <form id="survey" class="grid"></form>
+
+    <section id="result" class="card result">
+      <h2 style="margin-top:0; color:var(--ink);">Your result</h2>
+      <div id="personaPills"></div>
+      <p id="explanation"></p>
+      <div class="scores" id="scoreGrid"></div>
+      <p class="footer-note">Hybrid rule used: Conscious Explorer if Explorer &ge; 6, Experience Seeker &ge; 6, and Eco-tourist &ge; 3.</p>
+    </section>
+  </div>
+
+  <script>
+    const questions = [
+      {
+        text: "1. What motivates your trip the most?",
+        options: {
+          A: "Discovering new cultures and hidden places",
+          B: "Relaxing and enjoying the moment",
+          C: "Traveling affordably and freely",
+          D: "Experiencing unique, memorable moments",
+          E: "Traveling responsibly and sustainably"
+        }
+      },
+      {
+        text: "2. Your ideal accommodation is:",
+        options: {
+          A: "Local guesthouse or homestay",
+          B: "Comfortable hotel or resort",
+          C: "Hostel or budget stay",
+          D: "Stylish boutique or photogenic stay",
+          E: "Eco-lodge or sustainable accommodation"
+        }
+      },
+      {
+        text: "3. How do you usually plan your trips?",
+        options: {
+          A: "Independent and flexible",
+          B: "Pre-booked and structured",
+          C: "Minimal planning, go with the flow",
+          D: "Planned around key experiences or events",
+          E: "Planned with sustainability in mind"
+        }
+      },
+      {
+        text: "4. What type of destination appeals most?",
+        options: {
+          A: "Remote or less-visited places",
+          B: "Popular, well-known destinations",
+          C: "Affordable places with good infrastructure",
+          D: "Visually stunning or iconic places",
+          E: "Nature-rich, protected environments"
+        }
+      },
+      {
+        text: "5. Your travel budget approach:",
+        options: {
+          A: "Spend on meaningful experiences",
+          B: "Spend for comfort and convenience",
+          C: "Keep costs as low as possible",
+          D: "Spend on unique, once-in-a-lifetime moments",
+          E: "Spend where it supports sustainability or local impact"
+        }
+      },
+      {
+        text: "6. Which activity sounds most appealing?",
+        options: {
+          A: "Exploring a local village or cultural site",
+          B: "Relaxing at a resort or beach",
+          C: "Meeting other travelers in hostels",
+          D: "Attending a festival or unique event",
+          E: "Wildlife conservation or eco-tour"
+        }
+      },
+      {
+        text: "7. How important is sustainability in your travel choices?",
+        options: {
+          A: "Somewhat important",
+          B: "Not a priority",
+          C: "Only if it is cheap",
+          D: "Nice bonus, but not essential",
+          E: "Very important - core to my decisions"
+        }
+      },
+      {
+        text: "8. Your ideal trip pace:",
+        options: {
+          A: "Slow and immersive",
+          B: "Relaxed and easy",
+          C: "Flexible and spontaneous",
+          D: "Packed with highlights",
+          E: "Balanced with nature and reflection"
+        }
+      },
+      {
+        text: "9. How do you feel about popular tourist spots?",
+        options: {
+          A: "Prefer to avoid them",
+          B: "Enjoy them - they are popular for a reason",
+          C: "Only if they are cheap",
+          D: "Visit them for the experience and photos",
+          E: "Only if they are managed sustainably"
+        }
+      },
+      {
+        text: "10. What do you value most after a trip?",
+        options: {
+          A: "What I learned and discovered",
+          B: "How relaxed I feel",
+          C: "How little I spent",
+          D: "The memories and photos",
+          E: "The positive impact I made"
+        }
+      },
+      {
+        text: "11. What role does food play in your travel?",
+        options: {
+          A: "I seek local, authentic food experiences such as markets and street food",
+          B: "I enjoy food, but it is not central to the trip",
+          C: "I prioritize cheap, filling meals",
+          D: "I look for trendy, memorable, or unique food experiences",
+          E: "I care about sustainable, local sourcing and food ethics"
+        },
+        scoring: {
+          A: { "Explorer": 1, "Backpacker": 1 },
+          B: { "Comfort-Seeker": 1 },
+          C: { "Backpacker": 2 },
+          D: { "Experience Seeker": 2 },
+          E: { "Eco-tourist": 2 }
+        }
+      }
+    ];
+
+    const personaMap = {
+      A: { "Explorer": 1 },
+      B: { "Comfort-Seeker": 1 },
+      C: { "Backpacker": 1 },
+      D: { "Experience Seeker": 1 },
+      E: { "Eco-tourist": 1 }
+    };
+
+    const form = document.getElementById("survey");
+
+    function getSelectionArray(card) {
+      const raw = card.dataset.selection || "[]";
+      try { return JSON.parse(raw); } catch { return []; }
+    }
+
+    function setSelectionArray(card, arr) {
+      card.dataset.selection = JSON.stringify(arr);
+    }
+
+    function updateCardUI(card) {
+      const selected = getSelectionArray(card);
+      card.querySelectorAll(".option").forEach((option) => {
+        const key = option.dataset.value;
+        const badge = option.querySelector(".rank-badge");
+        option.classList.remove("selected-rank-1", "selected-rank-2");
+        badge.textContent = "";
+        const idx = selected.indexOf(key);
+        if (idx === 0) {
+          option.classList.add("selected-rank-1");
+          badge.textContent = "1st choice";
+        } else if (idx === 1) {
+          option.classList.add("selected-rank-2");
+          badge.textContent = "2nd choice";
+        }
+      });
+    }
+
+    questions.forEach((q, i) => {
+      const card = document.createElement("section");
+      card.className = "card question-card";
+      card.dataset.questionIndex = String(i);
+      card.dataset.selection = "[]";
+
+      const help = i === questions.length - 1
+        ? "Select up to 2 options to reflect both your budget and culinary style."
+        : "Select up to 2 options in order of importance.";
+
+      card.innerHTML = `
+        <h2 class="q-title">${q.text}</h2>
+        <div class="q-help">${help}</div>
+      `;
+
+      Object.entries(q.options).forEach(([letter, text]) => {
+        const option = document.createElement("button");
+        option.type = "button";
+        option.className = "option";
+        option.dataset.value = letter;
+        option.innerHTML = `
+          <div class="option-head">
+            <div><strong>${letter}.</strong> ${text}</div>
+            <span class="rank-badge"></span>
+          </div>
+        `;
+        option.addEventListener("click", () => {
+          const selected = getSelectionArray(card);
+          const existingIndex = selected.indexOf(letter);
+          const warning = card.querySelector(".warning");
+          warning.style.display = "none";
+
+          if (existingIndex >= 0) {
+            selected.splice(existingIndex, 1);
+          } else if (selected.length < 2) {
+            selected.push(letter);
+          } else {
+            warning.style.display = "block";
+          }
+
+          setSelectionArray(card, selected);
+          updateCardUI(card);
+        });
+        card.appendChild(option);
+      });
+
+      const warning = document.createElement("div");
+      warning.className = "warning";
+      warning.textContent = "You can only choose 2 answers per question.";
+      card.appendChild(warning);
+      form.appendChild(card);
+    });
+
+    const actionBox = document.createElement("section");
+    actionBox.className = "card";
+    actionBox.innerHTML = `
+      <div class="actions">
+        <button type="submit" class="primary">Calculate persona</button>
+        <button type="button" class="secondary" id="resetBtn">Reset survey</button>
+      </div>
+      <p class="small">Scoring: first choice adds 2x the configured points for that answer, and second choice adds 1x. Question 11 also captures food style.</p>
+    `;
+    form.appendChild(actionBox);
+
+    document.getElementById("resetBtn").addEventListener("click", () => {
+      document.querySelectorAll(".question-card").forEach((card) => {
+        setSelectionArray(card, []);
+        updateCardUI(card);
+        const warning = card.querySelector(".warning");
+        if (warning) warning.style.display = "none";
+      });
+      document.getElementById("result").style.display = "none";
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    function getScoreProfile(question, answer) {
+      if (question.scoring && question.scoring[answer]) {
+        return question.scoring[answer];
+      }
+      return personaMap[answer];
+    }
+
+    form.addEventListener("submit", (e) => {
+      e.preventDefault();
+      const questionCards = [...document.querySelectorAll(".question-card")];
+      const incomplete = questionCards.find((card) => getSelectionArray(card).length === 0);
+      if (incomplete) {
+        incomplete.scrollIntoView({ behavior: "smooth", block: "center" });
+        incomplete.querySelector(".warning").textContent = "Please choose at least 1 answer for this question.";
+        incomplete.querySelector(".warning").style.display = "block";
+        return;
+      }
+
+      const scores = {
+        "Explorer": 0,
+        "Comfort-Seeker": 0,
+        "Backpacker": 0,
+        "Experience Seeker": 0,
+        "Eco-tourist": 0
+      };
+
+      questionCards.forEach((card, idx) => {
+        const selected = getSelectionArray(card);
+        const warning = card.querySelector(".warning");
+        warning.textContent = "You can only choose 2 answers per question.";
+        warning.style.display = "none";
+
+        selected.forEach((answer, rankIndex) => {
+          const rankWeight = rankIndex === 0 ? 2 : 1;
+          const profile = getScoreProfile(questions[idx], answer);
+          Object.entries(profile).forEach(([persona, points]) => {
+            scores[persona] += points * rankWeight;
+          });
+        });
+      });
+
+      let primary = "";
+      if (scores["Explorer"] >= 6 && scores["Experience Seeker"] >= 6 && scores["Eco-tourist"] >= 3) {
+        primary = "Conscious Explorer";
+      } else {
+        primary = Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+      }
+
+      const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+      const secondary = sorted[1][0];
+
+      const pills = document.getElementById("personaPills");
+      pills.innerHTML = `
+        <span class="pill">Primary: ${primary}</span>
+        <span class="pill">Secondary: ${secondary}</span>
+      `;
+
+      const explanation = document.getElementById("explanation");
+      explanation.textContent = primary === "Conscious Explorer"
+        ? "This respondent blends discovery, memorable experiences, and a clear sustainability mindset, with food preferences now included in the profile."
+        : `This respondent shows the strongest alignment with the ${primary} profile, based on ranked travel and food preferences.`;
+
+      const scoreGrid = document.getElementById("scoreGrid");
+      scoreGrid.innerHTML = Object.entries(scores)
+        .map(([name, value]) => `<div class="score-box"><strong>${name}</strong><div style="font-size:28px; color:var(--success); margin-top:6px;">${value}</div></div>`)
+        .join("");
+
+      document.getElementById("result").style.display = "block";
+      document.getElementById("result").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  </script>
+</body>
+</html>
